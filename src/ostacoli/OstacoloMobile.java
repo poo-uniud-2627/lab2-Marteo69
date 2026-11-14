@@ -18,6 +18,10 @@ public class OstacoloMobile implements Ostacolo {
 
     private Rettangolo area;   // non è final: l'ostacolo si muove
     // scrivete qui gli altri campi che vi servono
+    private final double velocita;
+    private final double limiteAlto;
+    private final double limiteBasso;
+    private boolean scende;
 
     /**
      * Pretende: area non è null; velocita è maggiore di 0; l'area sta fra i due limiti
@@ -27,26 +31,32 @@ public class OstacoloMobile implements Ostacolo {
     public OstacoloMobile(Rettangolo area, double velocita, double limiteAlto, double limiteBasso) {
         this.area = area;
         // scrivete qui
+        this.velocita = velocita;
+        this.limiteAlto = limiteAlto;
+        this.limiteBasso = limiteBasso;
+        this.scende = true;
     }
 
     @Override
-    public Rettangolo getArea() { return area; }
+    public Rettangolo getArea() {
+        return area;
+    }
 
     /** Non si rompe mai: il colpo non cambia niente (né dove sta, né come si muove). */
     @Override
     public void colpisci(Ostacoli campo) {
-        // scrivete qui
+        return;  // scrivete qui
     }
 
     @Override
     public boolean isRotto() {
-        return false; // scrivete qui
+        return false;  // scrivete qui
     }
 
     /** Promette: COLORE. */
     @Override
     public Color getColore() {
-        return null; // scrivete qui
+        return COLORE;  // scrivete qui
     }
 
     /**
@@ -58,6 +68,24 @@ public class OstacoloMobile implements Ostacolo {
      */
     @Override
     public void avanza() {
-        // scrivete qui
+        double yAlto = area.y(); 
+        double yBasso = area.y() + area.altezza();
+        double newY;
+        if(scende){                                //Verso il basso
+            if(yBasso + velocita >= limiteBasso){  //Arriva al limite basso o lo supera?
+                newY = limiteBasso - area.altezza();
+                scende = false;
+            }else{
+                newY = yAlto + velocita;
+            }
+        }else{                                   //Verso l'alto
+            if(yAlto - velocita <= limiteAlto){  //Arriva al limite alto o lo supera?
+                newY = limiteAlto;
+                scende = true;
+            }else{
+                newY = yAlto - velocita;
+            }
+        }
+        area = new Rettangolo(area.x(), newY, area.larghezza(), area.altezza());  //(x, y, larghezza, altezza)
     }
 }
